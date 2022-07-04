@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<!--
+    https://www.bingmapsportal.com/Application#    
+    https://www.bing.com/api/maps/sdk/mapcontrol/isdk/loadmapasync#JS
+    https://docs.microsoft.com/en-us/bingmaps/v8-web-control/map-control-concepts/pushpins/custom-image-pushpin-example    
+    https://www.bigdatacloud.com/geocoding-apis
+-->
+<html>
+
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+
+    <!-- Reference to the Bing Maps SDK -->
+    <script type='text/javascript'
+        src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Am7ABZsl1hVs093AjZV82C3wxd-NCQ-KtBLpdtv4uB1UBvqIx7vcgN7Dw1A9RpQt'
+        async defer></script>
+
+    <script type="text/javascript">
+
+        var map = null;
+        function setMap() {
+            // Initialize the map - USE YOUR OWN KEY !
+            map = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: "An-_4sR5YiE_J-F45PIDzBSxi6iuJApmn2FnuTGfsRbjAMtDQQiLB6LiTZ2ToNJc"});
+    
+        }
+    </script>
+
+    <script type='text/javascript'>
+        function add()
+        {
+            var loc1 = new Microsoft.Maps.Location(37.983810,23.727539);
+            var loc2 = new Microsoft.Maps.Location(32.817280,34.988762);
+            var loc3 = new Microsoft.Maps.Location(30.044420, 31.235712);
+            var loc4 = new Microsoft.Maps.Location(35.0, 30.0);
+     
+            // Add a pin to the map
+            var pin1 = new Microsoft.Maps.Pushpin(loc1);
+            var pin2 = new Microsoft.Maps.Pushpin(loc2);
+            var pin3 = new Microsoft.Maps.Pushpin(loc3);
+            
+            pin4 = new Microsoft.Maps.Pushpin(loc4, {
+                icon: 'airplane.png',
+                anchor: new Microsoft.Maps.Point(10, 10)
+            });
+           
+            // Create a polyline
+            var lineVertices = new Array(loc1, loc2);
+            var line = new Microsoft.Maps.Polyline(lineVertices);
+
+            map.setView({ center: loc2, zoom: 4 });
+
+            map.entities.push(line);
+            map.entities.push(pin1);
+            map.entities.push(pin2);
+            map.entities.push(pin3);
+            map.entities.push(pin4);
+           
+        }
+        function move() {
+            for (var i = map.entities.getLength() - 1; i >= 0; i--) {
+                var pushpin = map.entities.get(i);
+                if (pushpin instanceof Microsoft.Maps.Pushpin) {
+                    map.entities.removeAt(i);
+                }
+            }
+        }       
+        
+    </script>
+</head>
+
+<body onload="setMap()">
+    <div id="myMap" style="position:relative;width:600px;height:400px;"></div>
+    <input type="button" onclick="add()" value="הוסף אייקונים" />
+    <input type="button" onclick="move()" value="הסר אייקונים" />
+</body>
+</body>
+
+
+</html>

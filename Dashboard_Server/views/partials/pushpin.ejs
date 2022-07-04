@@ -1,0 +1,60 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+	<script type='text/javascript'>
+    function GetMap() {
+        var map = new Microsoft.Maps.Map('#myMap', {});
+
+        //Create custom Pushpin using an SVG string.
+        // var pin = new Microsoft.Maps.Pushpin(map.getCenter(), {
+        //     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><circle cx="25" cy="25" r="20" stroke="orange" stroke-width="4" fill="yellow" /></svg>',
+        //     anchor: new Microsoft.Maps.Location(31.466089, 35.395859)
+        // });
+        var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(31.466089, 35.395859), null);
+
+        //Add the pushpin to the map.
+        map.entities.push(pin);
+    }
+    </script>
+    <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=[YOUR_BING_MAPS_KEY]' async defer></script>
+</head>
+<body>
+    <div id="myMap" style="position:relative;width:600px;height:400px;"></div>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+	<script type='text/javascript'>
+    function GetMap() {
+        var map = new Microsoft.Maps.Map('#myMap', {
+            credentials: 'Your Bing Maps Key',
+            //center: new Microsoft.Maps.Location(31.466089, 35.395859)
+        });
+
+        var center = map.getCenter();
+
+        //Create custom Pushpin
+        var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(31.466089, 35.395859), {
+            //icon: 'images/plane.png'
+        });
+        var pin2 = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(31, 35), {
+            //icon: 'images/plane.png'
+        });
+
+        //Add the pushpin to the map
+        map.entities.push(pin);
+        map.entities.push(pin2);
+    }
+    </script>
+    <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer></script>
+</head>
+<body>
+    <div id="myMap" style="position:relative;width:600px;height:400px;"></div>
+</body>
+</html>
