@@ -10,7 +10,13 @@
       </div>
       <div class="card-footer">
         <div class="stats">
-          <a href="javascript:;"><%= fotterText %></a>
+          <% if(title=="טיסות ממתינות לנחיתה"){ %>
+            <a href="/landingFlightsTable"><%= fotterText %></a>
+          <% } if (title=="טיסות הממתינות להמראה"){ %>
+            <a href="/takeOffFlightsTable"><%= fotterText %></a>
+          <% } else{ %>
+            <a href="javascript:;"><%= fotterText %></a>
+          <% } %>
         </div>
       </div>
     </div>

@@ -43,16 +43,22 @@ consumer.on("ready", function(arg) {
 consumer.on("data", function(m) {
   //console.log("got message");
   var flights = JSON.parse(m.value.toString());
+  var numberOfLandingFlights = 0;
+  var numberOfTakeOffFlights = 0;
   console.log(flights)
   flights.forEach(f => {
     if (f['dest'] == 'TLV') {
       redisClient.hSet('landingFlights', f['id'], JSON.stringify(f));
+      numberOfLandingFlights++;
     }
     else {
       redisClient.hSet('takeOffFlights', f['id'], JSON.stringify(f));
+      numberOfTakeOffFlights++;
     }
   });
-  
+  redisClient.set('NumberOfLandingFlights', numberOfLandingFlights);
+  redisClient.set('NumberOftakeOffFlights', numberOfTakeOffFlights);
+
   redisClient.publish("message", "{\"message\":\"Hello from Redis\"}", function () {
   });
 });

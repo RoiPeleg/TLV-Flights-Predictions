@@ -19,7 +19,9 @@ The above copyright notice and this permission notice shall be included in all c
     <script>
       var socket = io.connect();
       function setWs() {
+        console.log("in socket");
         socket.on('newdata', function (msg) {
+          console.log("in newdata");
           var element = document.getElementById(msg.districtId);
           element.innerText = msg.value;
         })
@@ -48,9 +50,6 @@ The above copyright notice and this permission notice shall be included in all c
               <div class="row">
                 <!-- <%- include("../partials/map") %> -->
                 <%- include("../partials/pushpin") %>
-              </div>
-              <div class="row">
-                <%- include("../partials/flightsList") %>
               </div>
             </div>
           </div>

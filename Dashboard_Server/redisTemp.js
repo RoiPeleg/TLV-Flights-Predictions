@@ -22,7 +22,7 @@ app.get('/test', function (req, res) {
         console.log(object);
     });
 
-    redisClient.publish("test", "{\"message\":\"Hello from Redis\"}", function () {
+    redisClient.publish("message", "{\"message\":\"Hello from Redis\"}", function () {
     });
 
     res.send('תקשרתי עם רדיס....')
