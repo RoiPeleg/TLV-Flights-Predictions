@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <script type='text/javascript'>
+        var socket = io.connect();
+        function GetMap() {
+            socket.on('connection', (socket) => {
+                console.log('a user connected');
+            });
+            socket.on('flightsIn', function (msg) {
+                var map = new Microsoft.Maps.Map('#myMap', {
+                    credentials: 'Your Bing Maps Key',
+                    //center: new Microsoft.Maps.Location(31.466089, 35.395859)
+                });
+
+                var center = map.getCenter();
+                for (var i = 0; i < msg.length; i++) {
+                    var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(msg[i].LON, msg[i].LAT), {
+                        //icon: 'images/plane.png'
+                    });
+                    map.entities.push(pin);
+                }
+
+                // //Create custom Pushpin
+                // var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(31.466089, 35.395859), {
+                //     //icon: 'images/plane.png'
+                // });
+                // var pin2 = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(31, 35), {
+                //     //icon: 'images/plane.png'
+                // });
+
+                // //Add the pushpin to the map
+                // map.entities.push(pin);
+                // map.entities.push(pin2);
+            })
+            socket.on('flightsOut', function (msg) {
+                var map = new Microsoft.Maps.Map('#myMap', {
+                    credentials: 'Your Bing Maps Key',
+                    //center: new Microsoft.Maps.Location(31.466089, 35.395859)
+                });
+
+                var center = map.getCenter();
+                for (var i = 0; i < msg.length; i++) {
+                    var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(msg[i].LON, msg[i].LAT), {
+                        //icon: 'images/plane.png'
+                    });
+                    map.entities.push(pin);
+                }
+            })
+        }
+    </script>
+    <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer></script>
+</head>
+
+<body>
+    <div id="myMap" style="position:relative;width:600px;height:400px;"></div>
+</body>
+
+</html>
