@@ -5,6 +5,8 @@ const Kafka = require("node-rdkafka");
 var app = require('express')();
 var server = require('http').Server(app);
 var redis = require('redis');
+var bigml = require('bigml');
+var connection = new bigml.BigML();
 const { json } = require("body-parser");
 var redisClient = redis.createClient();
 
@@ -21,18 +23,19 @@ const kafkaConf = {
 
 const prefix = "rzwju3vs-";
 const topic = `${prefix}new`;
+const topic_weather = `${prefix}weather`;
 //const producer = new Kafka.Producer(kafkaConf);
 
 const genMessage = m => new Buffer.alloc(m.length,m);
 //const prefix = process.env.CLOUDKARAFKA_USERNAME;
 
-const topics = [topic];
+const topics = [topic, topic_weather];
 const consumer = new Kafka.KafkaConsumer(kafkaConf, {
   "auto.offset.reset": "beginning"
 });
 
 consumer.on("error", function(err) {
-  console.error(err);
+  //console.error(err);
 });
 consumer.on("ready", function(arg) {
   console.log(`Consumer ${arg.name} ready`);
@@ -42,25 +45,43 @@ consumer.on("ready", function(arg) {
 
 consumer.on("data", function(m) {
   //console.log("got message");
-  var flights = JSON.parse(m.value.toString());
-  var numberOfLandingFlights = 0;
-  var numberOfTakeOffFlights = 0;
-  console.log(flights)
-  flights.forEach(f => {
-    if (f['dest'] == 'TLV') {
-      redisClient.hSet('landingFlights', f['id'], JSON.stringify(f));
-      numberOfLandingFlights++;
-    }
-    else {
-      redisClient.hSet('takeOffFlights', f['id'], JSON.stringify(f));
-      numberOfTakeOffFlights++;
-    }
-  });
-  redisClient.set('NumberOfLandingFlights', numberOfLandingFlights);
-  redisClient.set('NumberOftakeOffFlights', numberOfTakeOffFlights);
-
-  redisClient.publish("message", "{\"message\":\"Hello from Redis\"}", function () {
-  });
+  var data = JSON.parse(m.value.toString());
+  console.log(data);
+  if (Array.isArray(data)){
+    var localModel = new bigml.LocalModel("model/62cd5bc235f2d050f600ec52");
+    redisClient.del('landingFlights');
+    redisClient.del('takeOffFlights');
+    console.log("in if");
+    var flights = data;
+    var numberOfLandingFlights = 0;
+    var numberOfTakeOffFlights = 0;
+    //console.log(flights)
+    flights.forEach(f => {
+      if (f['dest'] == 'TLV') {
+        //var p = localModel.predict(msg[i], function(error, prediction) {return prediction});
+        //console.log(p);
+        //f[prediction] = p['prediction'];
+        redisClient.hSet('landingFlights', f['id'], JSON.stringify(f));
+        numberOfLandingFlights++;
+      }
+      else {
+        //var p = localModel.predict(msg[i], function(error, prediction) {return prediction});
+        //console.log(p);
+        //f[prediction] = p['prediction'];
+        redisClient.hSet('takeOffFlights', f['id'], JSON.stringify(f));
+        numberOfTakeOffFlights++;
+      }
+    });
+    redisClient.set('NumberOfLandingFlights', numberOfLandingFlights);
+    redisClient.set('NumberOftakeOffFlights', numberOfTakeOffFlights);
+    redisClient.publish("message", "{\"message\":\"Hello from Redis\"}", function () {
+    });
+  }
+  else {
+    redisClient.set('Weather', JSON.stringify(data));
+    redisClient.publish("Wmessage", "{\"message\":\"Weather from Redis\"}", function () {
+    });
+  }
 });
 
 redisClient.on('connect', function () {
@@ -80,6 +101,6 @@ consumer.on('event.error', function(err) {
   process.exit(1);
 });
 consumer.on('event.log', function(log) {
-  console.log(log);
+  //console.log(log);
 });
 consumer.connect();

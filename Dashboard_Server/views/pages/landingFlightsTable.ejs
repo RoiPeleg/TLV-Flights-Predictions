@@ -16,12 +16,16 @@
         // var element = document.getElementById(msg.flightLanding);
         // element.innerText = msg.value;
         console.log("in flightsIn")
-        var table_body = '<table border="1" id="example"><thead><tr><th> id </th><th> source </th><th>destinition</th></tr></thead><tbody>';
+        var table_body = '<table class="center" border="1" id="example"><thead><tr><th> Id </th><th> Company </th><th> Source </th><th>Destinition</th><th> Type </th><th> Scheduled TakeOff Time </th><th> Scheduled Landing Time </th><th> Delay Prediction</th></tr></thead><tbody>';
         for (var i = 0; i < msg.length; i++) {
           table_body += '<tr>';
 
           table_body += '<td>';
           table_body += msg[i].id;
+          table_body += '</td>';
+
+          table_body += '<td>';
+          table_body += msg[i].company;
           table_body += '</td>';
 
           table_body += '<td>';
@@ -32,7 +36,19 @@
           table_body += msg[i].dest;
           table_body += '</td>';
 
-          table_body += '</tr>';
+          table_body += '<td>';
+          table_body += msg[i].type;
+          table_body += '</td>';
+
+          var myDate = new Date(msg[i].departure * 1000);
+          table_body += '<td>';
+          table_body += myDate.toLocaleString();
+          table_body += '</td>';
+
+          var myDate = new Date(msg[i].arrival * 1000);
+          table_body += '<td>';
+          table_body += myDate.toLocaleString();
+          table_body += '</td>';
         }
         table_body += '</tbody></table>';
         $('#tableDiv').html(table_body);//display data of the table
@@ -40,10 +56,45 @@
     }
   </script>
   <style>
-    .content {
-      max-width: 1200px;
-      margin-right: 100px;
-      margin-left: 450px;
+    table {
+      border-collapse: collapse;
+      margin: 25px 0;
+      font-size: 0.9em;
+      font-family: sans-serif;
+      min-width: 400px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+
+    thead tr {
+      background-color: #0072B5;
+      color: #ffffff;
+      text-align: center;
+      font-size: 1.3em;
+    }
+
+    th,
+    td {
+      padding: 12px 15px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #dddddd;
+      font-weight: bold;
+      color: #0072B5;
+    }
+
+    tbody tr:nth-of-type(even){
+      background-color: #f3f3f3;
+    }
+
+    tbody tr:last-of-type {
+      border-bottom: 2px solid #009879;
+    }
+
+    table.center {
+      margin-left: auto; 
+      margin-right: auto;
     }
   </style>
 </head>

@@ -17,6 +17,8 @@ client.connect();
 var NumlandingFlights = 0;
 var NumtakeOffFlights = 0;
 var landingFlights = [];
+var weather = {};
+var temp = 0;
 
 subscriber.subscribe('message', (message) => {
   client.hLen('landingFlights').then(function(result) {
@@ -49,12 +51,22 @@ subscriber.subscribe('message', (message) => {
   })
 });
 
+subscriber.subscribe ('Wmessage', (m) => {
+  client.get('Weather').then(function(result) {
+    weather = JSON.parse(result);
+    temp = weather['TD'];
+    console.log(weather);
+    console.log(temp);
+    io.emit('mezegAvir',{districtId:"weather",value:temp})
+  })
+});
+
 app.get('/', (req, res) => {
   var data = {
     cards: [
       {districtId:"landing", title: "טיסות ממתינות לנחיתה", value: NumlandingFlights, fotterText: "צפה בטיסות", icon: "flight" },
       {districtId:"takeOff", title: "טיסות הממתינות להמראה", value: NumtakeOffFlights, fotterText: "צפה בטיסות", icon: "flight" },
-      {districtId:"weather", title: "מזג האוויר", value: 22, fotterText: "צפה בפרטים", icon: "cloud" }
+      {districtId:"weather", title: "מזג האוויר", value: temp, fotterText: "צפה בפרטים", icon: "cloud" }
     ]
   }
   res.render("pages/dashboard", data)

@@ -25,19 +25,23 @@ The above copyright notice and this permission notice shall be included in all c
           var element = document.getElementById(msg.districtId);
           element.innerText = msg.value;
         })
+        socket.on('mezegAvir', function (msg){
+          var element = document.getElementById(msg.districtId);
+          element.innerText = msg.value;
+        })
       }
     </script>
     <!--ariel ws -->
     <style>
       .content {
         max-width: 1200px;
-        margin-right: 100px;
-        margin-left: 450px;
+        margin-left: auto; 
+        margin-right: auto;
       }
       </style>
 </head>
 
-<body class="" onload="setWs()">
+<body class="center" onload="setWs()">
           <div class="content">
             <div class="container-fluid">
               <div class="row">
