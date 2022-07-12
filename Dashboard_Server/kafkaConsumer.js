@@ -20,7 +20,7 @@ const kafkaConf = {
   "sasl.password": "jofuI3Fq_jnaNtb2A7zMX211BOPpy7J-",
   "debug": "generic,broker,security"
 };
-
+var localModel = new bigml.LocalModel("model/62cd5bc235f2d050f600ec52");
 const prefix = "rzwju3vs-";
 const topic = `${prefix}new`;
 const topic_weather = `${prefix}weather`;
@@ -48,7 +48,7 @@ consumer.on("data", function(m) {
   var data = JSON.parse(m.value.toString());
   console.log(data);
   if (Array.isArray(data)){
-    var localModel = new bigml.LocalModel("model/62cd5bc235f2d050f600ec52");
+    
     redisClient.del('landingFlights');
     redisClient.del('takeOffFlights');
     console.log("in if");
@@ -58,16 +58,16 @@ consumer.on("data", function(m) {
     //console.log(flights)
     flights.forEach(f => {
       if (f['dest'] == 'TLV') {
-        //var p = localModel.predict(msg[i], function(error, prediction) {return prediction});
-        //console.log(p);
-        //f[prediction] = p['prediction'];
+        var p = localModel.predict(f, function(error, prediction) {return console.log(prediction)});
+        console.log(p);
+        f['prediction'] = p['prediction'];
         redisClient.hSet('landingFlights', f['id'], JSON.stringify(f));
         numberOfLandingFlights++;
       }
       else {
-        //var p = localModel.predict(msg[i], function(error, prediction) {return prediction});
-        //console.log(p);
-        //f[prediction] = p['prediction'];
+        var p = localModel.predict(f, function(error, prediction) {return console.log(prediction)});
+        console.log(p);
+        f['prediction'] = p['prediction'];
         redisClient.hSet('takeOffFlights', f['id'], JSON.stringify(f));
         numberOfTakeOffFlights++;
       }
