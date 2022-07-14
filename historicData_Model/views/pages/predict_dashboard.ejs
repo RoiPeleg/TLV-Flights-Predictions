@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect();
+        function setWs() {
+            console.log("in setWs");
+            socket.on('connection', (socket) => {
+                console.log('client connected');
+            });
+            socket.on('m', function (msg) {
+                console.log(msg);
+            })
+            socket.on('error', (socket) => {
+                console.log('client error');
+            });
+        }
+    </script>
+</head>
+
+<style>
+
+</style>
+
+<body class="center" , onload="setWs()">
+    <div class="row">
+        <label for="start">Start Month:</label>
+        <input type="month" id="start" name="start" min="2022-01" value="2022-06">
+    </div>
+    <div class="row">
+        <label for="end">End Month:</label>
+        <input type="month" id="end" name="end" min="2022-01" value="2022-06">
+    </div>
+
+    <button onclick="SendData()">Enter</button>
+
+    <p id="demo"></p>
+
+    <script>
+        function SendData() {
+            var s = document.getElementById("start").value;
+            var e = document.getElementById("end").value;
+            document.getElementById("demo").innerHTML = "before emit";
+            socket.emit('dates', {'start': s, 'end': e });
+            document.getElementById("demo").innerHTML = "data sent and the model retrained";
+        }
+    </script>
+</body>
+
+</html>
