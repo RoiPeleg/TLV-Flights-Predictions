@@ -1,8 +1,54 @@
-<div>
-    <iframe width="500" height="400" frameborder="0" src="https://www.bing.com/maps/embed?h=400&w=500&cp=32.083738118953725~34.88777160644531&lvl=11&typ=d&sty=r&src=SHELL&FORM=MBEDV8" scrolling="no">
-    </iframe>
-    <div style="white-space: nowrap; text-align: center; width: 500px; padding: 6px 0;">
-       <a id="largeMapLink" target="_blank" href="https://www.bing.com/maps?cp=32.083738118953725~34.88777160644531&amp;sty=r&amp;lvl=11&amp;FORM=MBEDLD">View Larger Map</a> &nbsp; | &nbsp;
-       <a id="dirMapLink" target="_blank" href="https://www.bing.com/maps/directions?cp=32.083738118953725~34.88777160644531&amp;sty=r&amp;lvl=11&amp;rtp=~pos.32.083738118953725_34.88777160644531____&amp;FORM=MBEDLD">Get Directions</a>
-   </div>
-</div>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <script type='text/javascript'>
+        var socket = io.connect();
+        function GetMap() {
+            socket.on('connection', (socket) => {
+                console.log('a user connected');
+            });
+            var map = new Microsoft.Maps.Map('#myMap', {
+                credentials: 'An-_4sR5YiE_J-F45PIDzBSxi6iuJApmn2FnuTGfsRbjAMtDQQiLB6LiTZ2ToNJc',
+                //center: new Microsoft.Maps.Location(31.466089, 35.395859)
+            });
+            socket.on('flightsIn', function (msg) {
+                // remove previous update pins
+                for (var i = map.entities.getLength() - 1; i >= 0; i--) {
+                    var pushpin = map.entities.get(i);
+                    if (pushpin instanceof Microsoft.Maps.Pushpin) {
+                        map.entities.removeAt(i);
+                    }
+                }
+                // add pins for this update - flights in
+                var center = map.getCenter();
+                for (var i = 0; i < msg.length; i++) {
+                    var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(msg[i].LON, msg[i].LAT), {
+                        icon: 'images/plane.png'
+                    });
+                    map.entities.push(pin);
+                }
+            })
+
+            socket.on('flightsOut', function (msg) {
+                // add pins for this update - flights out
+                var center = map.getCenter();
+                for (var i = 0; i < msg.length; i++) {
+                    var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(msg[i].LON, msg[i].LAT), {
+                        icon: 'images/plane.png'
+                    });
+                    map.entities.push(pin);
+                }
+            })
+        }
+    </script>
+    <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer></script>
+</head>
+
+<body>
+    <div id="myMap" style="position:relative;width:600px;height:400px;"></div>
+</body>
+
+</html>

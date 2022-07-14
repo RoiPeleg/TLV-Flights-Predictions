@@ -49,6 +49,10 @@
           table_body += '<td>';
           table_body += myDate.toLocaleString();
           table_body += '</td>';
+
+          table_body += '<td>';
+          table_body += msg[i].prediction;
+          table_body += '</td>';
         }
         table_body += '</tbody></table>';
         $('#tableDiv').html(table_body);//display data of the table
@@ -101,26 +105,7 @@
 
 <body class="" , onload="setWs()">
   <div id="tableDiv" style="margin-top: 40px"></div>
-  <!-- <table>
-    <tr>
-      <th>flightId</th>
-      <th>flightSrc</th>
-      <th>flightDes</th>
-    </tr>
-    <% for (var flight=0; flight < flights.length; flight++) { %>
-      <tr>
-        <td>
-          <%= flights[flight].id %>
-        </td>
-        <td>
-          <%= flights[flight].src %>
-        </td>
-        <td>
-          <%= flights[flight].des %>
-        </td>
-      </tr>
-      <% } %>
-  </table> -->
+
   
 </body>
 
