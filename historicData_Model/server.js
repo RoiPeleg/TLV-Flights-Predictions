@@ -4,7 +4,6 @@ var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 var bigml = require('bigml');
 
-
 //site imports
 const express = require('express')
 const app = express();
@@ -33,7 +32,7 @@ function create_new_model(start, end) {
     const dateTime = new Date().toISOString().slice(-24).replace(/\D/g, '').slice(0, 14);
     const filePath = "public/" + dateTime + ".csv";
     var dbo = db.db("hist");
-    var query = { month: { $and: [{ $gt: new Date(start).getMonth() }, { $st: new Date(end).getMonth()}] } };
+    var query = { month: { $gt :  start, $lt : end}};
     const data = await dbo.collection('flights').find(query).toArray();
     const fields = ['dest', 'src', 'type', 'company', 'date_type', 'dest_weather', 'src_weather', 'day', 'month', 'Timing'];
 
@@ -82,9 +81,7 @@ io.on('connection', (socket) => {
   console.log('a user connected');
   socket.emit('m', { 'data': 'hello' });
   socket.on('dates', function (msg) {
-    console.log(msg.start);
-    console.log(msg.end);
-    create_new_model(msg.start,msg.end)
+    create_new_model(Number(msg.start.split("-")[1]),Number(msg.end.split("-")[1]))
   });
 });
 
