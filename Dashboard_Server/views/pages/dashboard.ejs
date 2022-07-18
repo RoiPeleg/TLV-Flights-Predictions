@@ -17,6 +17,11 @@ The above copyright notice and this permission notice shall be included in all c
     <!--ariel ws-->
     <script src="/socket.io/socket.io.js"></script>
     <script>
+
+      // Function to format 1 in 01
+      const zeroFill = n => {
+        return ('0' + n).slice(-2);
+      }
       var socket = io.connect();
       // This function will run when the page is loaded
       function setWs() {
@@ -28,7 +33,21 @@ The above copyright notice and this permission notice shall be included in all c
           var element = document.getElementById(msg.districtId);
           element.innerText = msg.value;
         })
+
+        // Creates interval
+        const interval = setInterval(() => {
+          // Get current time
+          const now = new Date();
+
+          // Format date as in mm/dd/aaaa hh:ii:ss
+          const dateTime = zeroFill((now.getMonth() + 1)) + '/' + zeroFill(now.getUTCDate()) + '/' + now.getFullYear() + ' ' + zeroFill(now.getHours()) + ':' + zeroFill(now.getMinutes()) + ':' + zeroFill(now.getSeconds());
+
+          // Display the date and time on the screen using div#date-time
+          document.getElementById("time").innerText = dateTime;
+        }, 1000);
+
       }
+
     </script>
     <!--ariel ws -->
     <style>
@@ -49,17 +68,17 @@ The above copyright notice and this permission notice shall be included in all c
 </head>
 
 <body class="center" onload="setWs()">
-    <div class="row">
-      <!--start-->
-      <% cards.forEach(function(card) { %>
-        <%- include("../partials/card",card) %>
-          <% }); %>
-            <!--end-->
-    </div>
-    <div class="map">
-      <%- include("../partials/map") %>
-    </div>
-    <!-- <%- include("../partials/footer") %> -->
+  <div class="row">
+    <!--start-->
+    <% cards.forEach(function(card) { %>
+      <%- include("../partials/card",card) %>
+        <% }); %>
+          <!--end-->
+  </div>
+  <div class="map">
+    <%- include("../partials/map") %>
+  </div>
+  <!-- <%- include("../partials/footer") %> -->
 </body>
 
 </html>
