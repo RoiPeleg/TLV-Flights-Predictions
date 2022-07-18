@@ -24,7 +24,7 @@ The above copyright notice and this permission notice shall be included in all c
           var element = document.getElementById(msg.districtId);
           element.innerText = msg.value;
         })
-        socket.on('mezegAvir', function (msg){ // get weather
+        socket.on('mezegAvir', function (msg) { // get weather
           var element = document.getElementById(msg.districtId);
           element.innerText = msg.value;
         })
@@ -32,30 +32,34 @@ The above copyright notice and this permission notice shall be included in all c
     </script>
     <!--ariel ws -->
     <style>
-      .content {
-        max-width: 1200px;
-        margin-left: auto; 
-        margin-right: auto;
+      .center {
+        margin: auto;
+        width: 90%;
       }
-      </style>
+
+      body {
+        background-image: url("images/plane_background.jpg");
+        background-size: cover;
+      }
+
+      .map {
+        margin-left: 280px;
+      }
+    </style>
 </head>
 
 <body class="center" onload="setWs()">
-          <div class="content">
-            <div class="container-fluid">
-              <div class="row">
-                <!--start-->
-                <% cards.forEach(function(card) { %>
-                  <%- include("../partials/card",card) %>
-                    <% }); %>
-                      <!--end-->  
-              </div>
-              <div class="row">
-                <%- include("../partials/map") %>
-              </div>
-            </div>
-          </div>
-  <%- include("../partials/dashcode") %>
+    <div class="row">
+      <!--start-->
+      <% cards.forEach(function(card) { %>
+        <%- include("../partials/card",card) %>
+          <% }); %>
+            <!--end-->
+    </div>
+    <div class="map">
+      <%- include("../partials/map") %>
+    </div>
+    <!-- <%- include("../partials/footer") %> -->
 </body>
 
 </html>

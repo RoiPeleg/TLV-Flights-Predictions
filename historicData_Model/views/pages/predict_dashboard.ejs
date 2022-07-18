@@ -18,34 +18,96 @@
             });
         }
     </script>
+    <style>
+        body {
+            background-image: url("background.jpg");
+            background-size: cover;
+        }
+
+        .center {
+            margin: auto;
+            margin-top: 130px;
+            width: 60%;
+            padding: 10px;
+            border: 3px solid rgb(255, 255, 255);
+            border-style: dashed;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 40px;
+            color: rgb(255, 255, 255);
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 20px;
+            color: rgb(255, 255, 255);
+        }
+
+        h3 {
+            border: 3px solid rgb(255, 255, 255);
+            border-style: dashed;
+            text-align: center;
+            font-size: 30px;
+            margin: auto;
+            color: rgb(255, 255, 255);
+            width: 50%;
+            padding: 10px;
+        }
+
+        button {
+            border: none;
+            border-radius: 25px;
+            color: rgb(4, 170, 165);
+            padding: 15px 32px;
+            text-align: center;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            background-color: rgb(255, 255, 255);
+        }
+    </style>
 </head>
 
-<style>
-
-</style>
-
 <body class="center" , onload="setWs()">
-    <div class="row">
-        <label for="start">Start Month:</label>
-        <input type="month" id="start" name="start" min="2022-01" value="2022-06">
-    </div>
-    <div class="row">
-        <label for="end">End Month:</label>
-        <input type="month" id="end" name="end" min="2022-01" value="2022-06">
-    </div>
+    <h1>Choose start month for prediction<br></h1>
+    <h2>
+        <div class="row">
+            <label for="start">Start Month:</label>
+            <input type="month" id="start" name="start" min="2022-01" value="2022-06">
+        </div>
+    </h2>
+    <h1>Choose end month for prediction<br></h1>
+    <h2>
+        <div class="row">
+            <label for="end">End Month:</label>
+            <input type="month" id="end" name="end" min="2022-01" value="2022-06">
+        </div>
+    </h2>
 
-    <button onclick="SendData()">Enter</button>
+    <h1><button onclick="SendData()">Enter</button></h1>
 
-    <p id="demo"></p>
+    <h2 id="demo"></h2>
+
+    <h3>Date/Time: <span id="datetime"></span></h3>
 
     <script>
         function SendData() {
             var s = document.getElementById("start").value;
             var e = document.getElementById("end").value;
             document.getElementById("demo").innerHTML = "before emit";
-            socket.emit('dates', {'start': s, 'end': e });
+            socket.emit('dates', { 'start': s, 'end': e });
             document.getElementById("demo").innerHTML = "data sent and the model retrained";
         }
+    </script>
+
+    <script>
+    var dt = new Date();
+    document.getElementById("datetime").innerHTML = (("0"+dt.getDate()).slice(-2)) +"."+ (("0"+(dt.getMonth()+1)).slice(-2)) +"."+ (dt.getFullYear()) +" "+ (("0"+dt.getHours()).slice(-2)) +":"+ (("0"+dt.getMinutes()).slice(-2));
     </script>
 </body>
 
