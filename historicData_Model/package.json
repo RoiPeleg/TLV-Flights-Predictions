@@ -1,0 +1,27 @@
+{
+  "name": "historic_data_predication",
+  "version": "1.0.0",
+  "description": "stores historic data",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"nodemon server.js\" \"nodemon Model/data_receiver.js\""
+  },
+  "keywords": [
+    "bigML",
+    "MongoDB"
+  ],
+  "author": "Roi Peleg,Tal Abed",
+  "license": "ISC",
+  "dependencies": {
+    "bigml": "^1.25.2",
+    "concurrently": "^7.2.2",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "json2csv": "^5.0.7",
+    "mongodb": "^4.7.0",
+    "node-rdkafka": "^2.13.0",
+    "nodemon": "^2.0.19",
+    "socket.io": "^4.5.1"
+  }
+}

@@ -2,7 +2,7 @@ var axios = require('axios');
 const express = require('express');
 const app = express();
 const fs = require('fs');
-var API_key = "4f2c4a4098566e5adaee3aca35896191"//"5b5738e97d3d10f0736a4e601c25882c"
+var API_key = "5b5738e97d3d10f0736a4e601c25882c" //"4f2c4a4098566e5adaee3aca35896191"
 const bodyParser = require('body-parser');
 const resultBuffer = fs.readFileSync('codesToLoc.txt');
 const IataToLoc = JSON.parse(resultBuffer.toString().trim());
@@ -130,7 +130,7 @@ async function get_Date_type() {
 }
 
 var part = 'minutely,alerts,daily,hourly'
-// runs every 60 sec and runs on init.
+
 con.connect(function (err) {
     if (err) throw err;
     console.log("Connected! to MySQL");
@@ -200,7 +200,7 @@ async function collect_flights_data() {
                     console.log('Error', error.message);
                 }
             });
-            var src_weather = await collect_weather_data();
+            var src_weather = await collect_weather_data(-1);
         }
         else {
             var src_weather = await axios.get(`https://api.openweathermap.org/data/2.5/onecall?lat=${lats}&lon=${lons}&exclude=${part}&appid=${API_key}`).then(response => { return response.data }).catch(function (error) {
@@ -217,27 +217,10 @@ async function collect_flights_data() {
                     console.log('Error', error.message);
                 }
             });
-            var dest_weather = await collect_weather_data();
+            var dest_weather = await collect_weather_data(-1);
         }
         // console.log(`https://api.openweathermap.org/data/2.5/onecall?lat=${lats}&lon=${lons}&exclude=${part}&appid=${API_key}`);
         // console.log(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=${part}&appid=${API_key}`);
-
-        //   
-        // var src_weather = await axios.get(`https://api.openweathermap.org/data/2.5/onecall?lat=${lats}&lon=${lons}&exclude=${part}&appid=${API_key}`).then(response => { return response.data }).catch(function (error) {
-        //     if (error.response) {
-        //       // Request made and server responded
-        //       console.log(error.response.data);
-        //       console.log(error.response.status);
-        //       console.log(error.response.headers);
-        //     } else if (error.request) {
-        //       // The request was made but no response was received
-        //       console.log(error.request);
-        //     } else {
-        //       // Something happened in setting up the request that triggered an Error
-        //       console.log('Error', error.message);
-        //     }
-
-        //   });;
         var time_data = await axios.get('https://data-live.flightradar24.com/clickhandler/?version=1.5&flight=' + current_flight[19]).then(response => {
             return response['data']['time'];
         }).catch(err => {
@@ -245,8 +228,7 @@ async function collect_flights_data() {
             return null;
         });
         var date_type = await get_Date_type();
-        // console.log(current_flight[16]);
-        // console.log(time_data);
+
         if(time_data==null)
         {
             continue;
@@ -270,16 +252,14 @@ async function collect_flights_data() {
             real_arrival: time_data['real']['arrival'],
             dest_weather: dest_weather,
             src_weather: src_weather
-        }; // TODO add weather back
-        //console.log(obj);
+        }; 
         myData.push(obj);
     }
-
     producer.produce(topic, -1, genMessage(JSON.stringify(myData)), numberOfMessages++);
     console.log("sent data");
 }
 
-async function collect_weather_data() {
+async function collect_weather_data(prod = 1) {
     var current_weather = await axios.get('https://ims.data.gov.il/sites/default/files/xml/imslasthour.xml')
         .then(response => {
             var result = JSON.parse(convert.xml2json(response.data, { compact: true, spaces: 4 }));
@@ -298,23 +278,25 @@ async function collect_weather_data() {
         }).catch(function (error) {
             return { id: "error" };
         });
-    //console.log(current_weather);
-    if (current_weather[0] != "error") {
+    if (prod != -1 && current_weather[0] != "error") {
         producer.produce(topic_weather, -1, genMessage(JSON.stringify(current_weather)), numberOfMessages++);
         console.log("sent weather");
     }
-    else {
-        console.log("error on weather");
-    }
+    // else if(prod == 1){
+    //     console.log("no produce");
+    // }
+    // else {
+    //     console.log("error on weather");
+    // }
     return current_weather;
 }
 
 producer.on("ready", function (arg) {
     console.log(`producer ariel ready.`);
     collect_flights_data();
-    setInterval(collect_flights_data, 60 * 1000 * 0.5);
+    setInterval(collect_flights_data, 60 * 1000 * 1);
     collect_weather_data();
-    setInterval(collect_weather_data, 60 * 1000 * 3);
+    setInterval(collect_weather_data, 60 * 1000 * 2);
 });
 
 producer.connect();
