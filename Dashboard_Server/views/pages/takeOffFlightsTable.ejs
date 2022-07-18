@@ -16,9 +16,13 @@
         // var element = document.getElementById(msg.flightLanding);
         // element.innerText = msg.value;
         console.log("in flightsOut")
-        var table_body = '<table class="center" border="1" id="example"><thead><tr><th> Id </th><th> Company </th><th> Source </th><th>Destinition</th><th> Type </th><th> Scheduled TakeOff Time </th><th> Scheduled Landing Time </th><th> Delay Prediction</th></tr></thead><tbody>';
+        var table_body = '<table class="center" border="1" id="example"><thead><tr><th> Flight Id </th><th> Plane Id </th><th> Company </th><th> Source </th><th>Destinition</th><th> Type </th><th> Scheduled TakeOff Time </th><th> Scheduled Landing Time </th><th> Delay Prediction</th></tr></thead><tbody>';
         for (var i = 0; i < msg.length; i++) {
           table_body += '<tr>';
+
+          table_body += '<td>';
+          table_body += msg[i].flight_id;
+          table_body += '</td>';
 
           table_body += '<td>';
           table_body += msg[i].id;
@@ -88,8 +92,12 @@
       color: #0072B5;
     }
 
-    tbody tr:nth-of-type(even){
+    tbody tr:nth-of-type(even) {
       background-color: #f3f3f3;
+    }
+
+    tbody tr:nth-of-type(odd) {
+      background-color: #00e8fd;
     }
 
     tbody tr:last-of-type {
@@ -97,13 +105,26 @@
     }
 
     table.center {
-      margin-left: auto; 
+      margin-left: auto;
       margin-right: auto;
+    }
+
+    body {
+      background-image: url("images/plane_background.jpg");
+      background-size: cover;
+    }
+
+    h1 {
+      font-size: 70px;
+      text-align: center;
+      color: #000000;
+      font-style: initial;
     }
   </style>
 </head>
 
 <body class="" , onload="setWs()">
+  <h1>Take Off Flights</h1>
   <div id="tableDiv" style="margin-top: 40px"></div>
 </body>
 
