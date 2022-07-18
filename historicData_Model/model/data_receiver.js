@@ -1,11 +1,9 @@
-// var MongoClient = require('mongodb').MongoClient;
-// var url = "mongodb://localhost:27017/";
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://admin:zntrNP6Rva9UY1jg@mongoapp.9e973.mongodb.net/?retryWrites=true&w=majority";
 //const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1, keepAlive : true});
 const Kafka = require("node-rdkafka");
 const kafkaConf = {
-  "group.id": "moped.srvs.cloudkafka.com",
+  "group.id": "moped.srvs.cloudkafka.com_2",
   "metadata.broker.list": "moped-01.srvs.cloudkafka.com:9094,moped-02.srvs.cloudkafka.com:9094,moped-03.srvs.cloudkafka.com:9094".split(","),
   "socket.keepalive.enable": true,
   "security.protocol": "SASL_SSL",
@@ -39,9 +37,8 @@ consumer.on("data", function (m) {
   var flights = [];
   for (const key in data) { //process flights in dataset format
     const flight = data[key];
-    console.log(flight['flight_id']);
     if (flight.real_arrival != null && flight.departure != null) {
-      console.log("valid flight");
+      console.log(flight['flight_id']);
       var to_insert = {};
       to_insert['dest'] = flight['dest'];
       to_insert['src'] = flight['src'];
@@ -53,14 +50,17 @@ consumer.on("data", function (m) {
       to_insert['day'] = new Date().getDay();
       to_insert['month'] = new Date().getMonth();
 
+
+      var diff = 0;
       if (flight['dest'] == 'TLV') {
-        var diff = flight['real_arrival'] - flight['scheduled_arrival'];
+        var diff = Number(flight['real_arrival']) - Number(flight['arrival']);
       }
       else {
-        var diff = flight['real_departure'] - flight['scheduled_departure'];
+        var diff = Number(flight['real_departure']) - Number(flight['departure']);
       }
+
       diff = Math.floor(diff / 60);
-      var mins_diff = diff % 60;
+      var mins_diff = Math.abs(diff % 60);
       var time = "On Time";
       if (mins_diff < 15) {
         time = "On Time";
@@ -72,6 +72,8 @@ consumer.on("data", function (m) {
         time = "Heavy Delay";
       }
       to_insert['Timing'] = time;
+      console.log(mins_diff);
+      console.log(time);
       flights.push(to_insert);
     }
   }

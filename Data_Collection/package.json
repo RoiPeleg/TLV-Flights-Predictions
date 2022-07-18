@@ -1,0 +1,36 @@
+{
+  "name": "data_collection",
+  "version": "1.0.0",
+  "description": "collects data from various sources such RT flight, weather, holydays",
+  "main": "server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RoiPeleg/TLV-Flights-Predictions.git"
+  },
+  "keywords": [
+    "data",
+    "pipelines",
+    "RT"
+  ],
+  "author": "Roi Peleg, Tal Abed",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RoiPeleg/TLV-Flights-Predictions/issues"
+  },
+  "homepage": "https://github.com/RoiPeleg/TLV-Flights-Predictions#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "express": "^4.18.1",
+    "flight-data": "^2.0.3",
+    "json2csv": "^5.0.7",
+    "mysql2": "^2.3.3",
+    "node-rdkafka": "^2.13.0",
+    "socket-io": "^1.0.0",
+    "socket.io": "^4.5.1",
+    "uuid": "^8.3.2",
+    "xml-js": "^1.6.11"
+  }
+}
