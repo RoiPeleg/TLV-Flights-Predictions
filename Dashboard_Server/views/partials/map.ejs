@@ -6,7 +6,22 @@
     <meta charset="utf-8" />
     <script type='text/javascript'>
         var socket = io.connect();
+        var map, infobox;
         function GetMap() {
+            function pushpinClicked(e) {
+                console.log("click");
+                //Make sure the infobox has metadata to display.
+                //if (e.target.metadata) {
+                    //Set the infobox options with the metadata of the pushpin.
+                    infobox.setOptions({
+                        location: e.target.getLocation(),
+                        title: e.target.metadata.title,
+                        description: e.target.metadata.description,
+                        visible: true
+                    });
+                //}
+            }
+
             socket.on('connection', (socket) => {
                 console.log('a user connected');
             });
@@ -14,6 +29,11 @@
                 credentials: 'An-_4sR5YiE_J-F45PIDzBSxi6iuJApmn2FnuTGfsRbjAMtDQQiLB6LiTZ2ToNJc',
                 //center: new Microsoft.Maps.Location(31.466089, 35.395859)
             });
+            //Create an infobox at the center of the map but don't show it.
+            infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+                visible: false
+            });
+            infobox.setMap(map);
             socket.on('flightsIn', function (msg) {
                 // remove previous update pins
                 for (var i = map.entities.getLength() - 1; i >= 0; i--) {
@@ -28,6 +48,12 @@
                     var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(msg[i].LON, msg[i].LAT), {
                         icon: 'images/plane.png'
                     });
+                    pin.metadata = {
+                        title: msg[i].flight_id,
+                        description: "dest: " + msg[i].dest + "\nsrc: " + msg[i].src
+                    };
+                    //Add a click event handler to the pushpin.
+                    Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
                     map.entities.push(pin);
                 }
             })
@@ -39,6 +65,12 @@
                     var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(msg[i].LON, msg[i].LAT), {
                         icon: 'images/plane.png'
                     });
+                    pin.metadata = {
+                        title: msg[i].flight_id,
+                        description: "dest: " + msg[i].dest + "\nsrc: " + msg[i].src
+                    };
+                    //Add a click event handler to the pushpin.
+                    Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
                     map.entities.push(pin);
                 }
             })
