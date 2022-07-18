@@ -1,5 +1,8 @@
-var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+// var MongoClient = require('mongodb').MongoClient;
+// var url = "mongodb://localhost:27017/";
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://admin:zntrNP6Rva9UY1jg@mongoapp.9e973.mongodb.net/?retryWrites=true&w=majority";
+//const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1, keepAlive : true});
 const Kafka = require("node-rdkafka");
 const kafkaConf = {
   "group.id": "moped.srvs.cloudkafka.com",
@@ -24,7 +27,7 @@ consumer.on("ready", function (arg) {
   console.log(`Consumer ${arg.name} ready`);
   consumer.subscribe(topics);
   consumer.consume();
-  MongoClient.connect(url, function (err, db) {
+  MongoClient.connect(uri, function (err, db) {
     if (err) throw err;
     fdb = db;
     console.log("Connected to mongo");
